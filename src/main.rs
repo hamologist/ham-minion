@@ -53,8 +53,13 @@ async fn emojify(ctx: Context<'_>, message: String) -> Result<(), Error> {
 
 #[tokio::main]
 async fn main() {
-    let token =
-        std::env::var("DISCORD_TOKEN").expect("Missing environment variable: DISCORD_TOKEN");
+    let token = match std::env::var("DISCORD_TOKEN") {
+        Ok(val) => val,
+        Err(_) => {
+            println!("Missing environment variable: DISCORD_TOKEN");
+            return;
+        }
+    };
     let intents = serenity::GatewayIntents::non_privileged();
 
     let emojifier = Arc::new(Emojifier::new());
